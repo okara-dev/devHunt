@@ -7,7 +7,6 @@ Versteht kurze Sätze und antwortet mit APIs
 import json
 import sys
 import os
-import re
 
 from apis import WikipediaAPI, OpenLibraryAPI, DuckDuckGoAPI
 
@@ -25,17 +24,13 @@ Schreib kurze Sätze:
 
   📖 WIKIPEDIA
      "wiki Einstein"
-     "info Japan"
-     "über Python"
 
   🎲 ZUFALLSTHEMA
      "thema physik"
      "zufall biologie"
-     "random informatik"
 
   📚 BÜCHER
      "buch psychologie"
-     "buch informatik"
 
   🔍 WEB-SUCHE
      "such python tutorial"
@@ -45,7 +40,7 @@ Schreib kurze Sätze:
      "hilfe"
 
   👋 BEENDEN
-     "exit" oder "tschüss"
+     "tschüss"
 
 ╚══════════════════════════════════════════════════════════════╝
 """)

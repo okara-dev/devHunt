@@ -1,7 +1,5 @@
 """
 Groq LLM Client mit automatischem Fallback
-Primär: qwen/qwen3.8-27b
-Fallback: openai/gpt-oss-120b
 """
 
 from groq import Groq
@@ -12,9 +10,7 @@ class LLMClient:
         self.primary_model = "qwen/qwen3.8-27b"
         self.fallback_model = "openai/gpt-oss-120b"
     
-    def generate(self, system_prompt, user_prompt, max_tokens=1500, temperature=0.9):
-        """Generiert Text mit automatischem Fallback"""
-        
+    def generate(self, system_prompt, user_prompt, max_tokens=1500, temperature=0.8):
         try:
             response = self.client.chat.completions.create(
                 model=self.primary_model,
@@ -22,7 +18,7 @@ class LLMClient:
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
-                max_tokens=max_tokens,
+                max_tokens=min(max_tokens, 1200),
                 temperature=temperature,
             )
             return response.choices[0].message.content.strip()
