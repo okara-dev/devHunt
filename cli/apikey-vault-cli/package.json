@@ -1,0 +1,19 @@
+{
+  "name": "apikey-vault-cli",
+  "version": "1.0.0",
+  "description": "Secure CLI to store, view and reuse API keys",
+  "main": "bin/index.js",
+  "type": "module",
+  "bin": {
+    "vault": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "node bin/index.js"
+  },
+  "keywords": ["cli", "api", "key", "vault", "security", "encryption"],
+  "author": "Onur Kara",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
