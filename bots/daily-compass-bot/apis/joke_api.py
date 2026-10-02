@@ -1,18 +1,30 @@
+"""
+JokeAPI – Witze auf Deutsch
+"""
+
 import requests
 import random
-from .translator import translate_text
 
 class JokeAPI:
     def __init__(self):
         self.base_url = "https://v2.jokeapi.dev/joke"
         
-        # Deutsche Witze (Fallback)
+        # Deutsche Fallback-Witze
         self.german_jokes = [
-            "Warum hat der Programmierer keinen Hund? Weil er schon genug Fehler im Code hat! 😄",
-            "Warum können Geister so gut programmieren? Weil sie viel 'Pointer'-Erfahrung haben! 👻"
+            "Warum können Geister so gut lügen? Weil sie durchsichtig sind! 👻",
+            "Was sagt ein Gen, das traurig ist? 'Ich bin desolat!' 🧬",
+            "Warum nehmen Skelette keinen Regenschirm mit? Weil sie schon durchnässt sind! 💀",
+            "Was macht ein Clown im Büro? Faxen! 🤡",
+            "Warum können Bienen so gut rechnen? Weil sie den Summ-en kennen! 🐝"
         ]
     
-    def get_joke(self, category="Any"):
+    def get_joke(self):
+        """Holt einen Witz (ohne Programming-Kategorie)"""
+        # Kategorien: Any, Misc, Pun, Spooky, Christmas, Dark
+        # Programming wird NICHT angefragt
+        categories = ["Misc", "Pun", "Spooky", "Christmas"]
+        category = random.choice(categories)
+        
         params = {
             "blacklistFlags": "nsfw,religious,political,racist,sexist,explicit",
             "safe-mode": "true",
@@ -20,15 +32,22 @@ class JokeAPI:
         }
         
         try:
-            response = requests.get(f"{self.base_url}/{category}", params=params, timeout=10)
+            response = requests.get(
+                f"{self.base_url}/{category}",
+                params=params,
+                timeout=10
+            )
             response.raise_for_status()
             data = response.json()
             
             if data.get("error"):
                 return self._get_fallback_joke()
             
-            return data
+            # Sicherheitscheck: Falls doch Programming → Fallback
+            if data.get("category", "").lower() == "programming":
+                return self._get_fallback_joke()
             
+            return data
         except Exception as e:
             print(f"❌ JokeAPI Fehler: {e}")
             return self._get_fallback_joke()
@@ -43,13 +62,16 @@ class JokeAPI:
         if not data:
             return "😂 Kein Witz verfügbar."
         
-        joke = translate_text(data.get("joke", "Kein Witz"))
+        joke = data.get("joke", "Kein Witz")
         category = data.get("category", "Unbekannt")
         
+        # Kategorie-Mapping
         category_map = {
-            "Programming": "Programmierung",
-            "Pun": "Wortspiel",
             "Misc": "Verschiedenes",
+            "Pun": "Wortspiel",
+            "Spooky": "Gruselig",
+            "Christmas": "Weihnachten",
+            "Dark": "Dunkel",
             "Deutsch": "🇩🇪 Deutsch"
         }
         category_de = category_map.get(category, category)

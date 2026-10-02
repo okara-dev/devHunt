@@ -1,0 +1,19 @@
+{
+  "name": "passwords-vault-cli",
+  "version": "1.0.0",
+  "description": "Secure CLI to store, view and reuse passwords",
+  "main": "bin/index.js",
+  "type": "module",
+  "bin": {
+    "passvault": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "node bin/index.js"
+  },
+  "keywords": ["cli", "password", "vault", "security", "encryption", "manager"],
+  "author": "Onur Kara",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

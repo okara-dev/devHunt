@@ -2,9 +2,7 @@
 """
 E-Book-Bot
 - KI schreibt ein ganzes Buch
-- PDF-Export (lesen)
-- Audio-Version mit Vox (hören)
-- Alles wird per E-Mail verschickt
+- Automatisch: HTML + Audio-Version (WAV)
 """
 
 import json
@@ -15,7 +13,7 @@ import shutil
 from datetime import datetime
 
 from llm_client import LLMClient
-from apis import EmailSender, EbookBuilder, PDFBuilder, VoxTTS
+from apis import EmailSender, EbookBuilder, VoxTTS
 
 PSYCHOLOGIE_THEMEN = [
     "Kognitive Dissonanz", "Narzissmus", "Trauma und Heilung",
@@ -31,12 +29,12 @@ def load_config():
 def show_help():
     print("""
 ╔══════════════════════════════════════════════════════════════╗
-║                        E-BOOK-BOT                            ║
+║                      E-BOOK-BOT                              ║
 ╚══════════════════════════════════════════════════════════════╝
-
-Der Bot schreibt ein ganzes Buch zu einem Psychologie-Thema.
-Du entscheidest: PDF (lesen) oder WAV (hören).
-Alles wird per E-Mail verschickt.
+Der Bot schreibt ein ganzes Buch zu einem Thema.
+Du bekommst automatisch:
+  - HTML-Version (zum Lesen im Browser)
+  - MP3-Version  (zum Hören)
 ╚══════════════════════════════════════════════════════════════╝
 """)
 
@@ -103,18 +101,6 @@ Antworte NUR mit dem Titel."""
         return titel.strip().strip('"').strip("'").strip("*")
     return f"Die unsichtbaren Fäden des {thema}"
 
-def ask_output_format():
-    print(f"\n{'='*60}")
-    print("📦 Welches Format möchtest du?")
-    print(f"{'='*60}")
-    print("  [1] PDF   (lesen)")
-    print("  [2] WAV   (hören)")
-    print("  [3] Beides (PDF + WAV)")
-    print("  [0] Nichts (nur HTML per E-Mail)")
-    
-    choice = input("\n> ").strip()
-    return choice
-
 def create_ebook():
     print("📖 E-Book-Bot 2.0 wird gestartet...")
     print(f"📅 {datetime.now().strftime('%A, %d. %B %Y')}")
@@ -126,7 +112,6 @@ def create_ebook():
     llm = LLMClient(config["groq_api_key"])
     email = EmailSender(config["email"])
     builder = EbookBuilder()
-    pdf_builder = PDFBuilder()
     
     show_help()
     
@@ -189,50 +174,43 @@ def create_ebook():
     print(f"   ✅ {len(kapitel_liste)} Kapitel, ~{total_woerter} Wörter")
     
     # 4. HTML bauen
-    print(f"\n📚 Baue E-Book (HTML)...")
+    print(f"\n📚 Baue HTML...")
     html = builder.build_html(buch_titel, "KI-Autor", thema, kapitel_liste)
     print(f"   ✅ HTML fertig")
-    
-    # === FORMAT ABFRAGEN ===
-    choice = ask_output_format()
     
     # Temporärer Ordner
     temp_dir = tempfile.mkdtemp()
     safe_title = "".join(c for c in buch_titel if c.isalnum() or c in " -_").strip().replace(" ", "_")
     
     html_path = os.path.join(temp_dir, f"{safe_title}.html")
-    pdf_path = os.path.join(temp_dir, f"{safe_title}.pdf")
-    wav_path = os.path.join(temp_dir, f"{safe_title}.wav")
+    mp3_path = os.path.join(temp_dir, f"{safe_title}.mp3")
     
     attachments = []
     
-    # === HTML ===
+    # HTML speichern
     with open(html_path, "w", encoding="utf-8") as f:
         f.write(html)
     attachments.append(html_path)
     
-    # === PDF ===
-    if choice in ["1", "3"]:
-        print(f"\n📄 Erstelle PDF...")
-        pdf_result = pdf_builder.html_to_pdf(html, pdf_path)
-        if pdf_result:
-            attachments.append(pdf_result)
+    # 5. MP3 erstellen 
+    print(f"\n🎙️  Erstelle Audio-Version...")
+    try:
+        vox = VoxTTS(config)
+        full_text = vox.build_full_text(buch_titel, thema, kapitel_liste)
+        mp3_result = vox.text_to_speech(
+            full_text, 
+            mp3_path, 
+            format="mp3",
+            bitrate="128k"
+        )
+        if mp3_result:
+            attachments.append(mp3_result)
+    except FileNotFoundError as e:
+        print(f"   ❌ Vox nicht verfügbar: {e}")
+    except Exception as e:
+        print(f"   ❌ Vox-Fehler: {e}")
     
-    # === WAV ===
-    if choice in ["2", "3"]:
-        print(f"\n🎙️  Erstelle Audio-Version...")
-        try:
-            vox = VoxTTS(config)
-            full_text = vox.build_full_text(buch_titel, thema, kapitel_liste)
-            wav_result = vox.text_to_wav(full_text, wav_path)
-            if wav_result:
-                attachments.append(wav_result)
-        except FileNotFoundError as e:
-            print(f"   ❌ Vox nicht verfügbar: {e}")
-        except Exception as e:
-            print(f"   ❌ Vox-Fehler: {e}")
-    
-    # === E-MAIL SENDEN ===
+    # 6. E-Mail senden
     print(f"\n📧 Sende E-Mail mit Anhängen...")
     success = email.send_ebook(
         buch_titel, thema,
@@ -240,7 +218,7 @@ def create_ebook():
         attachments
     )
     
-    # === ZUSAMMENFASSUNG ===
+    # Zusammenfassung
     print(f"\n{'='*60}")
     print(f"🎉 FERTIG!")
     print(f"{'='*60}")
@@ -255,16 +233,6 @@ def create_ebook():
             print(f"      • {os.path.basename(att)} ({size_mb:.2f} MB)")
     else:
         print(f"\n   ❌ E-Mail konnte nicht gesendet werden.")
-    
-    # === COVER-BILD PROMPT ===
-    print(f"\n{'='*60}")
-    print(f"🎨 COVER-BILD ERSTELLEN (Bing Image Creator)")
-    print(f"{'='*60}")
-    print(f"   Gehe zu: https://www.bing.com/images/create")
-    print(f"\n   Prompt:")
-    print(f"   \"Buchcover für '{buch_titel}' - "
-          f"psychologischer Roman über {thema}, "
-          f"stimmungsvoll, minimalistisch, poetisch\"")
     
     # Cleanup
     try:

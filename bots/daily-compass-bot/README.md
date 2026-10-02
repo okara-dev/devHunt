@@ -1,61 +1,55 @@
 # Daily Compass Bot
 
-## Zweck
-
-Daily Compass erstellt eine taegliche Nachricht mit Nachrichten, Technik-News, NASA-Inhalten, einem Sprichwort und einem Witz. Die Nachricht wird als HTML- und Plain-Text-E-Mail versendet.
+Daily Compass stellt bei jedem Aufruf eine kompakte Nachricht aus Nachrichten, Technik-Artikeln, NASA-Inhalten, einem Sprichwort und einem Witz zusammen und versendet sie als E-Mail. Es gibt keinen eingebauten Zeitplan; für regelmäßigen Versand kann das Skript über die Aufgabenplanung gestartet werden.
 
 ## Inhalte
 
-- RSS-Schlagzeilen aus Tagesschau und Spiegel.
-- Top-Stories von Hacker News.
-- Beliebte Artikel von Dev.to.
-- NASA Astronomy Picture of the Day.
-- Ein Zitat aus DummyJSON oder ein lokales Sprichwort als Fallback.
-- Ein Witz aus JokeAPI oder ein lokaler deutscher Fallback.
-- Automatische Uebersetzung der NASA-Texte, Sprichwoerter und Witze mit DeepL.
-- API- und Fallback-Fehler werden abgefangen, damit die Zusammenstellung weiterlaufen kann.
+- RSS-Schlagzeilen
+- Top-Stories von Hacker News und beliebte Artikel von Dev.to
+- NASA Astronomy Picture of the Day
+- Sprichwort und Witz, jeweils mit Fallbacks
+- DeepL-Übersetzungen unterstützter Inhalte
 
-## Installation und Start
+## Voraussetzungen und Installation
 
-Voraussetzungen: Python 3.10+, Internetzugang, ein DeepL-API-Schluessel, ein NASA-API-Schluessel und ein SMTP-Konto.
+- Python 3.10 oder neuer
+- Internetzugang
+- DeepL- und NASA-API-Schlüssel
+- SMTP-Zugangsdaten für den Versand
+
+Im Verzeichnis `programme/bots/daily-compass-bot`:
 
 ```powershell
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python main.py
-python main.py --no-pause
 ```
 
-`--no-pause` beendet den Prozess ohne abschliessende Eingabeaufforderung und eignet sich fuer geplante Jobs. Unter Windows kann `start_compass.bat` verwendet werden.
+`python main.py --no-pause` überspringt die abschließende Eingabeaufforderung. Unter Windows kann `start_compass.bat` verwendet werden. Jeder normale Start ruft die APIs ab und versucht, eine E-Mail zu senden.
 
 ## Konfiguration
 
-Lege im Bot-Verzeichnis eine lokale `config.json` mit dieser Struktur an:
+`config.json` muss im Bot-Verzeichnis liegen und die folgenden Felder enthalten:
 
 ```json
 {
-	"api_keys": {"nasa_api": "..."},
-	"deepl_api_key": "...",
-	"email": {
-		"sender": "...",
-		"password": "...",
-		"receiver": "...",
-		"smtp_server": "smtp.gmail.com",
-		"smtp_port": 587
-	}
+  "api_keys": {
+    "nasa_api": "DEIN_NASA_API_KEY"
+  },
+  "deepl_api_key": "DEIN_DEEPL_API_KEY",
+  "email": {
+    "sender": "absender@example.com",
+    "password": "SMTP_PASSWORT_ODER_APP_PASSWORT",
+    "receiver": "empfaenger@example.com",
+    "smtp_server": "smtp.gmail.com",
+    "smtp_port": 587
+  }
 }
 ```
 
-API-Schluessel, SMTP-Passwoerter und E-Mail-Adressen gehoeren nicht in die Versionsverwaltung. Bei Gmail sollte ein App-Passwort verwendet werden.
+Schütze API-Schlüssel, SMTP-Passwörter und E-Mail-Adressen und veröffentliche sie nicht. Für Gmail wird üblicherweise ein App-Passwort benötigt.
 
-## Abhaengigkeiten
+## Datenschutz und Fehler
 
-- `requests` fuer NASA, Hacker News, Dev.to, Zitate und Witze
-- `feedparser` fuer RSS-Feeds
-- `deepl` fuer die Uebersetzung
-- SMTP mit STARTTLS fuer den Versand
-
-## Lizenz und Status
-
-Eine Lizenz ist derzeit nicht festgelegt. Der Bot ist ein lokales Automatisierungsskript; externe APIs koennen ausfallen oder ihre Antworten aendern.
+Für die Nachricht werden Inhalte von externen RSS-Feeds und APIs abgerufen. Verfügbarkeit und Inhalt dieser Dienste können sich ändern. SMTP-Zugangsdaten werden zum Versand verwendet.

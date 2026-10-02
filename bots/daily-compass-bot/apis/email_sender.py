@@ -15,23 +15,23 @@ class EmailSender:
         self.smtp_server = config.get("smtp_server", "smtp.gmail.com")
         self.smtp_port = config.get("smtp_port", 587)
     
-    def send_daily_compass(self, news_content, hn_content, dev_content,
+    def send_daily_compass(self, news_content, dev_content,
                            nasa_content, proverb_content, joke_content):
         subject = f"🧭 Daily Compass - {datetime.now().strftime('%d.%m.%Y')}"
         
         html_body = self._build_html(
-            news_content, hn_content, dev_content,
+            news_content, dev_content,
             nasa_content, proverb_content, joke_content
         )
         
         text_body = self._build_text(
-            news_content, hn_content, dev_content,
+            news_content, dev_content,
             nasa_content, proverb_content, joke_content
         )
         
         return self.send_email_html(subject, html_body, text_body)
     
-    def _build_html(self, news, hn, dev, nasa, proverb, joke):
+    def _build_html(self, news, dev, nasa, proverb, joke):
         return f"""<!DOCTYPE html>
 <html>
 <head>
@@ -81,7 +81,6 @@ class EmailSender:
             color: #2d3748;
         }}
         .section-news {{ border-left-color: #3182ce; }}
-        .section-hn {{ border-left-color: #ff6600; }}
         .section-dev {{ border-left-color: #0a0a0a; }}
         .section-nasa {{ border-left-color: #805ad5; }}
         .section-proverb {{ border-left-color: #d69e2e; }}
@@ -140,14 +139,6 @@ class EmailSender:
 
         <hr class="hr">
 
-        <!-- HACKER NEWS -->
-        <div class="section section-hn">
-            <div class="section-title">🟠 Hacker News</div>
-            <pre>{self._escape(hn)}</pre>
-        </div>
-
-        <hr class="hr">
-
         <!-- DEV.TO -->
         <div class="section section-dev">
             <div class="section-title">👨‍💻 Dev.to</div>
@@ -190,7 +181,7 @@ class EmailSender:
 </body>
 </html>"""
     
-    def _build_text(self, news, hn, dev, nasa, proverb, joke):
+    def _build_text(self, news, dev, nasa, proverb, joke):
         return f"""
 ╔══════════════════════════════════════════════════════════╗
 ║                    🧭 DAILY COMPASS                     ║
@@ -199,11 +190,6 @@ class EmailSender:
 
 📰 NEWS
 {news}
-
-─────────────────────────────────────────────────────────
-
-🟠 HACKER NEWS
-{hn}
 
 ─────────────────────────────────────────────────────────
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Daily Compass – Erweitert mit Hacker News, Dev.to und DeepL
+Daily Compass – Erweitert mit RSS-News, Dev.to und DeepL
 """
 
 import json
@@ -9,7 +9,6 @@ import os
 from datetime import datetime
 
 from apis.rss_news import RSSNews
-from apis.hackernews_api import HackerNewsAPI
 from apis.devto_api import DevToAPI
 from apis.nasa_api import NASAAPI
 from apis.proverbs_api import ProverbsAPI
@@ -33,7 +32,6 @@ def run_compass():
     
     # APIs initialisieren
     news = RSSNews()
-    hackernews = HackerNewsAPI()
     devto = DevToAPI()
     nasa = NASAAPI(config["api_keys"]["nasa_api"])
     proverbs = ProverbsAPI()
@@ -43,32 +41,27 @@ def run_compass():
     
     print("📡 Rufe Daten von APIs ab...")
     
-    # 1. RSS News
+    # 1. RSS News (erweitert)
     print("  📰 RSS News...")
-    articles = news.get_headlines(max_articles=3)
+    articles = news.get_headlines(max_articles=10)
     rss_content = news.format(articles)
     
-    # 2. Hacker News
-    print("  🟠 Hacker News...")
-    hn_stories = hackernews.get_top_stories(limit=5)
-    hn_content = hackernews.format(hn_stories)
-    
-    # 3. Dev.to
+    # 2. Dev.to
     print("  👨‍💻 Dev.to...")
     dev_articles = devto.get_top_articles(limit=5)
     dev_content = devto.format(dev_articles)
     
-    # 4. NASA
+    # 3. NASA
     print("  🚀 NASA...")
     nasa_data = nasa.get_apod()
     nasa_content = nasa.format(nasa_data) if nasa_data else "🚀 NASA nicht verfügbar"
     
-    # 5. Sprichwort
+    # 4. Sprichwort
     print("  📜 Sprichwort...")
     proverb_data = proverbs.get_proverb()
     proverb_content = proverbs.format(proverb_data) if proverb_data else "📜 Kein Sprichwort"
     
-    # 6. Witz
+    # 5. Witz
     print("  😂 Witz...")
     joke_data = joke.get_joke()
     joke_content = joke.format(joke_data) if joke_data else "😂 Kein Witz"
@@ -76,7 +69,7 @@ def run_compass():
     # E-Mail senden
     print("\n📧 Sende E-Mail...")
     success = email.send_daily_compass(
-        rss_content, hn_content, dev_content,
+        rss_content, dev_content,
         nasa_content, proverb_content, joke_content
     )
     

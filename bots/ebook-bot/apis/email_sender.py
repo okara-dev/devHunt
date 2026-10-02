@@ -1,6 +1,6 @@
 """
 E-Mail-Versand für E-Book-Bot
-Unterstützt mehrere Anhänge (HTML, PDF, WAV)
+Unterstützt HTML + WAV als Anhänge
 """
 
 import smtplib
@@ -21,16 +21,16 @@ class EmailSender:
     
     def send_ebook(self, title, thema, kapitel_anzahl, woerter_gesamt, attachments):
         """
-        Sendet E-Book mit mehreren Anhängen.
+        Sendet E-Book mit HTML + WAV als Anhänge.
         
-        :param attachments: Liste von Datei-Pfaden (PDF, WAV, HTML)
+        :param attachments: Liste von Datei-Pfaden (HTML, WAV)
         """
         subject = f"📖 Dein E-Book: {title}"
         
-        # Anhänge-Liste für E-Mail-Text
+        # Anhänge-Liste
         attachment_names = [os.path.basename(a) for a in attachments if a and os.path.exists(a)]
         
-        # E-Mail-Text (Plain)
+        # Plain-Text
         text_body = f"""
 📖 DEIN E-BOOK
 
@@ -45,7 +45,7 @@ Wörter: ~{woerter_gesamt}
 Viel Spaß beim Lesen oder Hören!
 """
         
-        # E-Mail-Text (HTML)
+        # HTML
         attachments_html = "".join([f"<li>{name}</li>" for name in attachment_names])
         
         html_body = f"""
@@ -67,11 +67,11 @@ Viel Spaß beim Lesen oder Hören!
                     <ul style="margin: 10px 0;">
                         {attachments_html}
                     </ul>
+                    <p style="margin: 10px 0 0 0; font-size: 13px; color: #718096;">
+                        <strong>HTML:</strong> Öffne die Datei mit deinem Browser zum Lesen.<br>
+                        <strong>WAV:</strong> Öffne die Datei mit einem Player zum Hören.
+                    </p>
                 </div>
-                
-                <p style="color: #718096; font-size: 14px;">
-                    Viel Spaß beim Lesen oder Hören! 🎧📖
-                </p>
             </div>
         </body>
         </html>
@@ -93,7 +93,7 @@ Viel Spaß beim Lesen oder Hören!
             msg_alternative.attach(MIMEText(html_body, "html", "utf-8"))
             msg.attach(msg_alternative)
             
-            # Anhänge hinzufügen
+            # Anhänge
             for path in attachments:
                 if not path or not os.path.exists(path):
                     continue
@@ -101,10 +101,8 @@ Viel Spaß beim Lesen oder Hören!
                 filename = os.path.basename(path)
                 ext = os.path.splitext(filename)[1].lower()
                 
-                # MIME-Type bestimmen
-                if ext == ".pdf":
-                    mime_type = ("application", "pdf")
-                elif ext == ".wav":
+                # MIME-Type
+                if ext == ".wav":
                     mime_type = ("audio", "wav")
                 elif ext == ".html":
                     mime_type = ("text", "html")
@@ -126,7 +124,7 @@ Viel Spaß beim Lesen oder Hören!
                     size_mb = os.path.getsize(path) / (1024 * 1024)
                     print(f"      📎 {filename} ({size_mb:.2f} MB)")
             
-            # Senden (Timeout erhöht wegen großer Anhänge)
+            # Senden
             server = smtplib.SMTP(self.smtp_server, self.smtp_port, timeout=180)
             server.starttls()
             server.login(self.sender, self.password)

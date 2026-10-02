@@ -2,6 +2,7 @@
 """
 Lern-Bot
 Versteht kurze Sätze und antwortet mit APIs
++ Sprachlehrer-Aktivierung
 """
 
 import json
@@ -24,23 +25,30 @@ Schreib kurze Sätze:
 
   📖 WIKIPEDIA
      "wiki Einstein"
+     "info Japan"
+     "über Python"
 
   🎲 ZUFALLSTHEMA
      "thema physik"
      "zufall biologie"
+     "random informatik"
 
   📚 BÜCHER
      "buch psychologie"
+     "buch informatik"
 
   🔍 WEB-SUCHE
      "such python tutorial"
      "google flask"
 
+  🇪🇸 SPRACHLEHRER
+     "aktiviere sprachlehrer"     → Startet den Sprachlehrer
+
   ❓ HILFE
      "hilfe"
 
   👋 BEENDEN
-     "tschüss"
+     "exit" oder "tschüss"
 
 ╚══════════════════════════════════════════════════════════════╝
 """)
@@ -56,6 +64,10 @@ def detect_intent(message):
     # === HILFE ===
     if any(word in msg_lower for word in ["hilfe", "help", "befehle"]):
         return "help", None
+    
+    # === SPRACHLEHRER AKTIVIEREN ===
+    if "aktiviere sprachlehrer" in msg_lower:
+        return "sprachlehrer", None
     
     # === BUCH ===
     if "buch" in msg_lower:
@@ -158,6 +170,28 @@ def run_lernbot():
                     print(f"🎓 Lern-Bot: Ich suche im Web nach '{arg}'...")
                     results = ddg.search(arg)
                     print(ddg.format(results, arg))
+            
+            # === SPRACHLEHRER AKTIVIEREN ===
+            elif intent == "sprachlehrer":
+                print("🎓 Lern-Bot: Starte Sprachlehrer...\n")
+                
+                bat_pfad = os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "sprachlehrer",
+                    "start_sprachlehrer.bat"
+                )
+                
+                if os.path.exists(bat_pfad):
+                    try:
+                        os.startfile(bat_pfad)
+                        print("✅ Sprachlehrer gestartet (neues Fenster)")
+                        print("   💡 Schließe das Fenster, um zurückzukehren.")
+                    except Exception as e:
+                        print(f"❌ Fehler beim Starten: {e}")
+                else:
+                    print(f"❌ Sprachlehrer nicht gefunden: {bat_pfad}")
+                
+                handled = False
             
             # === UNBEKANNT ===
             else:

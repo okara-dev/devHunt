@@ -1,23 +1,18 @@
 # Lern-Bot
 
-## Zweck
+Der Lern-Bot ist ein deutschsprachiger Recherche-Assistent für kurze Fragen. Er ruft Wikipedia-Zusammenfassungen und zufällige Themen ab, sucht Bücher bei Open Library und bietet eine Websuche an. Die Ergebnisse erscheinen im Terminal.
 
-Lern-Bot ist ein interaktiver deutschsprachiger Recherche-Chat fuer kurze Lernfragen. Antworten kommen aus Wikipedia, Open Library oder einer DuckDuckGo-Websuche und werden direkt im Terminal angezeigt.
+## Voraussetzungen
 
-## Befehle
+- Python 3.10 oder neuer
+- Internetzugang
+- Die im Projekt enthaltene `config.json`
 
-- `wiki Einstein`, `info Japan` oder `ueber Python`: Wikipedia-Zusammenfassung.
-- `thema physik`, `zufall biologie` oder `random informatik`: zufaelliges Thema aus Wikipedia.
-- `buch psychologie` oder `buch informatik`: passende Buecher aus Open Library.
-- `such python tutorial` oder `google flask`: Websuche ueber DuckDuckGo.
-- `hilfe`: Befehlsuebersicht.
-- `exit`, `quit`, `tschüss` oder `ciao`: Bot beenden.
-
-Ein einzelnes unbekanntes Wort wird als Wikipedia-Suche behandelt.
+Ein LLM- oder E-Mail-Konto ist für die Recherchefunktionen nicht erforderlich.
 
 ## Installation und Start
 
-Voraussetzungen: Python 3.10+ und Internetzugang. Ein LLM- oder SMTP-Konto ist nicht erforderlich.
+Im Verzeichnis `programme/bots/lern-bot`:
 
 ```powershell
 python -m venv .venv
@@ -26,25 +21,28 @@ python -m pip install -r requirements.txt
 python main.py
 ```
 
-Unter Windows kann `lernbot.bat` verwendet werden. Starte den Bot aus seinem Verzeichnis, damit `config.json` gefunden wird.
+Der Bot lädt `config.json` relativ zum aktuellen Arbeitsverzeichnis. Starte ihn deshalb aus seinem Projektverzeichnis.
 
-## Konfiguration
+## Eingaben
 
-Die lokale `config.json` kann optional `sprache` enthalten. Standard ist `de`:
+- `wiki Einstein`, `info Japan` oder `über Python`: Wikipedia-Suche
+- `thema physik`, `zufall biologie` oder `random informatik`: zufälliger Wikipedia-Artikel zum Thema
+- `buch psychologie` oder `buch informatik`: Büchersuche bei Open Library
+- `such python tutorial` oder `google flask`: DuckDuckGo-Websuche
+- `aktiviere sprachlehrer`: versucht den separaten Sprachlehrer unter `sprachlehrer/start_sprachlehrer.bat` zu starten
+- `hilfe`: Befehlsübersicht
+- `exit`, `quit`, `beenden`, `tschüss` oder `ciao`: Beenden
+
+Ein einzelnes unbekanntes Wort wird als Wikipedia-Suche interpretiert. Der Sprachlehrer ist ein separates Programm und benötigt seine eigenen Dateien und Konfiguration.
+
+## Konfiguration und Datenschutz
+
+`config.json` muss vorhanden sein. Optional kann die Wikipedia-Sprache gesetzt werden; Standard ist Deutsch:
 
 ```json
 {
-	"sprache": "de"
+  "sprache": "de"
 }
 ```
 
-## Abhaengigkeiten und Datenschutz
-
-- `requests` fuer Wikipedia und Open Library
-- `duckduckgo-search` fuer die Websuche
-
-Suchbegriffe werden an die jeweils verwendeten externen Dienste gesendet. Gib keine vertraulichen Informationen ein. Ergebnisse externer Wissensquellen koennen unvollstaendig oder veraltet sein.
-
-## Lizenz und Status
-
-Eine Lizenz ist derzeit nicht festgelegt. Der Bot arbeitet interaktiv im Terminal und versendet keine E-Mails.
+Suchbegriffe werden an Wikipedia, Open Library oder DuckDuckGo übermittelt. Gib keine vertraulichen Informationen ein. Ergebnisse können unvollständig oder veraltet sein.

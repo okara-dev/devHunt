@@ -1,43 +1,16 @@
 # Dev-Chat-Bot
 
-## Zweck
+Der Dev-Chat-Bot ist ein interaktiver Terminal-Assistent für Entwicklungsrecherche. Er fragt GitHub, npm und die Public APIs Directory ab, erstellt QuickChart-URLs und führt Websuchen aus.
 
-Der Dev-Chat-Bot ist ein interaktiver Terminal-Assistent fuer Entwickler. Er durchsucht GitHub und npm, findet freie APIs, erzeugt Charts und fuehrt Websuchen durch.
+## Voraussetzungen
 
-## Befehle
-
-### GitHub
-
-- `repo facebook/react`: Repository-Informationen wie Sterne, Forks, Issues, Sprache und Lizenz.
-- `user torvalds`: Profilinformationen eines GitHub-Benutzers.
-- `suche code fastapi`: bis zu fuenf passende Code-Ergebnisse.
-
-### Pakete und APIs
-
-- `npm express`: npm-Paketinformationen und woechentliche Downloads.
-- `api weather`: Suche in der Public APIs Directory.
-
-### Charts
-
-QuickChart erzeugt eine URL zu einem Bild. Unterstuetzt werden `bar`, `line` und `pie`:
-
-```text
-chart bar Januar,Februar,Maerz 100,200,150
-chart line Mo,Di,Mi 5,8,3
-chart pie A,B,C 30,50,20
-```
-
-Die Anzahl der Labels und Datenwerte muss uebereinstimmen.
-
-### Websuche und Steuerung
-
-- `web python tutorial` oder `such python tutorial`: DuckDuckGo-Websuche.
-- `hilfe`: Befehlsuebersicht.
-- `exit`, `quit`, `beenden` oder `tschüss`: Bot beenden.
+- Python 3.10 oder neuer
+- Internetzugang
+- Die im Projekt enthaltene `config.json`
 
 ## Installation und Start
 
-Voraussetzungen: Python 3.10+ und Internetzugang.
+Im Verzeichnis `programme/bots/dev-chatbot`:
 
 ```powershell
 python -m venv .venv
@@ -46,31 +19,37 @@ python -m pip install -r requirements.txt
 python main.py
 ```
 
-Unter Windows kann `Dev-Chatbot.bat` verwendet werden. Starte den Bot aus seinem Verzeichnis, damit `config.json` gefunden wird.
+Der Bot erwartet `config.json` im aktuellen Arbeitsverzeichnis. Starte ihn daher aus seinem Projektverzeichnis.
 
-## Konfiguration
+## Befehle
 
-GitHub funktioniert ohne Token fuer oeffentliche Daten. Ein optionaler Token erhoeht das API-Limit und wird in `config.json` hinterlegt:
+- `repo facebook/react`: GitHub-Repository abfragen
+- `user torvalds`: GitHub-Benutzerprofil abfragen
+- `suche code fastapi`: GitHub-Code-Suche
+- `npm express`: npm-Paketinformationen und Downloadzahlen abrufen
+- `api weather`: freie APIs durchsuchen
+- `web python tutorial` oder `such python tutorial`: Websuche
+- `hilfe`: Befehlsübersicht
+- `exit`, `quit`, `beenden` oder `tschüss`: Beenden
+
+Charts werden mit QuickChart erstellt. Unterstützt werden `bar`, `line` und `pie`; Labels und Werte werden kommasepariert angegeben:
+
+```text
+chart bar Januar,Februar,März 100,200,150
+chart line Mo,Di,Mi 5,8,3
+chart pie A,B,C 30,50,20
+```
+
+Die Anzahl der Labels und Werte muss übereinstimmen. Der Bot gibt eine Chart-URL aus.
+
+## Konfiguration und Datenschutz
+
+GitHub-Abfragen zu öffentlichen Daten funktionieren ohne Token. Ein optionaler Token kann in `config.json` hinterlegt werden:
 
 ```json
 {
-	"github_token": "..."
+  "github_token": "DEIN_GITHUB_TOKEN"
 }
 ```
 
-Verwende einen lokalen Token und veroeffentliche die Konfigurationsdatei nicht.
-
-## Abhaengigkeiten und Dienste
-
-- `requests` fuer GitHub, npm und die Public APIs Directory
-- `ddgs` fuer die DuckDuckGo-Suche
-- GitHub REST API
-- npm Registry API
-- Public APIs Directory
-- QuickChart ohne eigenen API-Schluessel
-
-Suchbegriffe und angeforderte Entwicklungsdaten werden an externe Dienste gesendet. Ergebnisse koennen unvollstaendig oder veraltet sein.
-
-## Lizenz und Status
-
-Eine Lizenz ist derzeit nicht festgelegt. Der Bot gibt Ergebnisse und Chart-URLs im Terminal aus und speichert keine eigenen Verlaufsdaten.
+Halte Tokens aus der Versionsverwaltung heraus. Suchbegriffe und Abfragen werden an die jeweiligen externen Dienste gesendet; deren Ergebnisse können unvollständig oder veraltet sein.
