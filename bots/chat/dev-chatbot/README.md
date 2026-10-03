@@ -10,7 +10,7 @@ Der Dev-Chat-Bot ist ein interaktiver Terminal-Assistent für Entwicklungsrecher
 
 ## Installation und Start
 
-Im Verzeichnis `programme/bots/dev-chatbot`:
+Im Verzeichnis `devHunt/bots/dev-chatbot`:
 
 ```powershell
 python -m venv .venv

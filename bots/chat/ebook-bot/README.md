@@ -9,7 +9,7 @@ Der E-Book-Bot erstellt aus einem selbst eingegebenen Thema einen deutschsprachi
 - SMTP-Zugangsdaten
 - Für die Audioausgabe: funktionsfähige Piper-TTS-Installation und passende Stimmen
 
-Im Verzeichnis `programme/bots/ebook-bot`:
+Im Verzeichnis `devHunt/bots/ebook-bot`:
 
 ```powershell
 python -m venv .venv

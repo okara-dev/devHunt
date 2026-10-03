@@ -6,7 +6,7 @@ Ein interaktives Node.js-Terminalprogramm zur lokalen Verwaltung von API-Schlüs
 
 - Node.js 14 oder neuer
 
-Im Verzeichnis `programme/cli/apikey-vault-cli`:
+Im Verzeichnis `devHunt/cli/apikey-vault-cli`:
 
 ```powershell
 npm start

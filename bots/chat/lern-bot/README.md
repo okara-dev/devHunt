@@ -12,7 +12,7 @@ Ein LLM- oder E-Mail-Konto ist für die Recherchefunktionen nicht erforderlich.
 
 ## Installation und Start
 
-Im Verzeichnis `programme/bots/lern-bot`:
+Im Verzeichnis `devHunt/bots/lern-bot`:
 
 ```powershell
 python -m venv .venv

@@ -6,7 +6,7 @@ Ein interaktives Node.js-Terminalprogramm zum lokalen Speichern, Suchen und Verw
 
 - Node.js 14 oder neuer
 
-Im Verzeichnis `programme/cli/passwords-vault-cli`:
+Im Verzeichnis `devHunt/cli/passwords-vault-cli`:
 
 ```powershell
 npm start
