@@ -1,0 +1,19 @@
+{
+  "name": "update-checker-cli",
+  "version": "1.0.0",
+  "description": "CLI to check for Windows updates and install them",
+  "main": "bin/index.js",
+  "type": "module",
+  "bin": {
+    "updatecheck": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "node bin/index.js"
+  },
+  "keywords": ["cli", "windows", "update", "winget", "powershell"],
+  "author": "Onur Kara",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
