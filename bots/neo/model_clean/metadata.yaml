@@ -1,0 +1,32 @@
+schema_version: 1.0.0
+report_type: llm-generative
+task_type: text-generation
+title: Qwen2.5-1.5B-Instruct INT4
+description: >-
+  A compact 1.5B-parameter instruction-tuned decoder-only language model for text generation and
+  general question answering, using GPTQ INT4 quantized weights with dynamic INT8 activations and an
+  INT8 language-model head to reduce size and improve inference efficiency while preserving strong
+  instruction-following capabilities.
+id: Arm/qwen2-5-1-5b-instruct-onnx-genai-int4-kquantlast-emb-int4
+filename: model.onnx
+base_model_id: Qwen/Qwen2.5-1.5B-Instruct
+vendor: Alibaba Cloud
+base_model_url: https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct
+profile: Arm-Optimized
+weight_dtype: int4
+quantization:
+  method: GPTQ
+  weight_bits: 4
+  activation_bits: 8
+  symmetric: false
+  mode: dynamic
+  weight_granularity: per-group
+  variant: GPTQ W4 (attention/FFN, group=32, asymmetric) + dynamic INT8 activations (KleidiAI SDOT) + INT8 LM-head k_quant_last
+    + native INT4 GatherBlockQuantized embedding
+calibration:
+  dataset_name: wikitext2
+  sample_count: 512
+  selection: random
+model_size_mb: 1078.681
+format: onnx
+parameter_count: 1777088000

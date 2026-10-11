@@ -1,23 +1,23 @@
-import subprocess
+import os
 import webbrowser
 
 from actions.browser import open_by_name
 
 
 APPS = {
-    "chrome": 'start "" chrome',
-    "firefox": 'start "" firefox',
-    "edge": 'start "" msedge',
-    "cmd": 'start "" cmd.exe',
-    "terminal": 'start "" cmd.exe',
-    "powershell": 'start "" powershell.exe',
-    "einstellungen": 'start "" ms-settings:',
-    "settings": 'start "" ms-settings:',
-    "spotify": 'start "" spotify.exe',
-    "vscode": 'start "" code',
-    "word": 'start "" winword.exe',
-    "excel": 'start "" excel.exe',
-    "outlook": 'start "" outlook.exe',
+    "chrome": "chrome",
+    "firefox": "firefox",
+    "edge": "msedge",
+    "cmd": "cmd.exe",
+    "terminal": "cmd.exe",
+    "powershell": "powershell.exe",
+    "einstellungen": "ms-settings:",
+    "settings": "ms-settings:",
+    "spotify": "spotify.exe",
+    "vscode": "code",
+    "word": "winword.exe",
+    "excel": "excel.exe",
+    "outlook": "outlook.exe",
     "notepad": "notepad.exe",
     "editor": "notepad.exe",
     "explorer": "explorer.exe",
@@ -44,16 +44,15 @@ def open_app(target: str) -> str:
 
     # 3. Bekannte Desktop-App
     if target in APPS:
-        cmd = APPS[target]
+        launch_target = APPS[target]
         try:
-            subprocess.Popen(cmd, shell=True)
+            os.startfile(launch_target)
             return f"{target.capitalize()} wurde geöffnet."
         except Exception as e:
             return f"Konnte {target} nicht öffnen: {e}"
 
-    # 4. Fallback: Windows-Start
     try:
-        subprocess.Popen(f'start "" {target}', shell=True)
+        os.startfile(target)
         return f"Versucht, {target} zu starten."
     except Exception as e:
         return f"Konnte {target} nicht öffnen: {e}"

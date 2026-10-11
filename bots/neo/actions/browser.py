@@ -25,9 +25,13 @@ def resolve_url(name: str) -> str | None:
 
 def open_url(url: str) -> str:
     """Öffnet eine URL. Ergänzt https:// falls nötig."""
+    url = url.strip()
+    if not url:
+        return "Keine URL angegeben."
     if not url.startswith(("http://", "https://")):
         url = "https://" + url
-    webbrowser.open(url)
+    if not webbrowser.open(url):
+        return f"Browser konnte die URL nicht öffnen: {url}"
     return f"Browser geöffnet: {url}"
 
 
@@ -42,7 +46,10 @@ def search_web(query: str, engine: str = "google") -> str:
         template = "https://www.google.com/search?q={query}"
 
     url = template.replace("{query}", urllib.parse.quote(query))
-    webbrowser.open(url)
+    if not query.strip():
+        return "Keine Suchanfrage angegeben."
+    if not webbrowser.open(url):
+        return f"Browser konnte die Suche nicht öffnen: {query}"
     return f"Suche nach '{query}' auf {engine.capitalize()} geöffnet."
 
 

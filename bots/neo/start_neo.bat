@@ -1,5 +1,5 @@
 @echo off
 title Neo
-cd /d "C:\Users\on1722454\Desktop\projekte\ai-lab\neo"
+cd /d "%~dp0"
 python main.py
 pause

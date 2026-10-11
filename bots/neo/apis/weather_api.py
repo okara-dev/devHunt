@@ -20,7 +20,11 @@ WETTER_CODES = {
 def get_weather(city: str) -> str:
     try:
         # 1. Geocoding
-        r = requests.get(GEO_URL, params={"name": city, "count": 1, "language": "de"})
+        r = requests.get(
+            GEO_URL,
+            params={"name": city, "count": 1, "language": "de"},
+            timeout=10,
+        )
         r.raise_for_status()
         data = r.json()
         if "results" not in data or not data["results"]:
@@ -36,7 +40,7 @@ def get_weather(city: str) -> str:
             "longitude": lon,
             "current_weather": True,
             "timezone": "auto",
-        })
+        }, timeout=10)
         r.raise_for_status()
         w = r.json()["current_weather"]
 

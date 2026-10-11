@@ -157,24 +157,6 @@
       "name": "clear_calendar",
       "description": "Löscht alle Termine aus dem Kalender.",
       "parameters": {"type": "object", "properties": {}, "required": []}
-    },
-    {
-      "name": "get_news",
-      "description": "Liefert aktuelle Nachrichten.",
-      "parameters": {
-        "type": "object",
-        "properties": {"category": {"type": "string"}},
-        "required": []
-      }
-    },
-    {
-      "name": "classify_email",
-      "description": "Klassifiziert eine E-Mail (Werbung, Spam, Stellenangebot, Wichtig, Privat).",
-      "parameters": {
-        "type": "object",
-        "properties": {"text": {"type": "string"}},
-        "required": ["text"]
-      }
     }
   ]
 }

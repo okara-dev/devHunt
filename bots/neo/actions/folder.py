@@ -16,14 +16,20 @@ SHORTCUTS = {
 
 
 def open_folder(path: str) -> str:
-    path = path.strip().lower()
-    if path in SHORTCUTS:
-        target = SHORTCUTS[path]
+    path = path.strip()
+    shortcut = SHORTCUTS.get(path.lower())
+    if shortcut is not None:
+        target = shortcut
     else:
-        target = Path(path)
+        target = Path(path).expanduser()
 
     if not target.exists():
         return f"Ordner '{path}' existiert nicht."
+    if not target.is_dir():
+        return f"'{path}' ist kein Ordner."
 
-    subprocess.Popen(f'explorer "{target}"')
+    try:
+        subprocess.Popen(["explorer", str(target)])
+    except OSError as e:
+        return f"Ordner konnte nicht geöffnet werden: {e}"
     return f"Ordner geöffnet: {target}"

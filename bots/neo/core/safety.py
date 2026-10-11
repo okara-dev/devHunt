@@ -2,6 +2,9 @@
 Sicherheits-Checks für gefährliche Aktionen.
 """
 
+import ntpath
+
+
 BLOCKED_COMMANDS = [
     "format c:",
     "format d:",
@@ -21,6 +24,9 @@ BLOCKED_KEYWORDS = [
     "wipe",
     "factory reset",
 ]
+
+CONFIRM_ACTIONS = {"sleep", "shutdown", "restart", "logout"}
+CONFIRM_TOOLS = {"delete_calendar_event", "clear_calendar"}
 
 
 class SafetyCheck:
@@ -45,15 +51,46 @@ class SafetyCheck:
 
     def is_safe_tool(self, tool_name: str, arguments: dict) -> tuple[bool, str]:
         """Prüft, ob ein Tool-Aufruf sicher ist."""
-        # Shutdown/Lock nur mit Bestätigung
-        if tool_name in ("system_shutdown", "system_lock"):
-            self.logger.warning(f"Kritische Aktion: {tool_name}")
-            return True, "kritisch"
+        if tool_name == "system_action":
+            action = arguments.get("action")
+            if not isinstance(action, str) or action not in {
+                "lock", "sleep", "shutdown", "restart", "logout", "cancel"
+            }:
+                return False, f"Unbekannte Systemaktion: {action}"
+            if action in CONFIRM_ACTIONS:
+                self.logger.warning(f"Bestätigung für kritische Aktion nötig: {action}")
+                return True, "confirmation_required"
 
-        # Pfad-Checks
-        if tool_name in ("open_folder", "delete_file"):
+        if tool_name in CONFIRM_TOOLS:
+            self.logger.warning(f"Bestätigung für Kalenderaktion nötig: {tool_name}")
+            return True, "confirmation_required"
+
+        if tool_name == "open_folder":
             path = arguments.get("path", "")
-            if path.startswith("C:\\Windows") or path.startswith("C:/Windows"):
-                return False, "Zugriff auf Windows-Systemordner verweigert, Sir."
+            if not isinstance(path, str):
+                return False, "Ungültiger Ordnerpfad, Sir."
+            normalized_path = ntpath.normcase(ntpath.abspath(path))
+            windows_path = ntpath.normcase(ntpath.join(ntpath.splitdrive(normalized_path)[0], "\\Windows"))
+            try:
+                if ntpath.commonpath((normalized_path, windows_path)) == windows_path:
+                    return False, "Zugriff auf Windows-Systemordner verweigert, Sir."
+            except ValueError:
+                return False, "Ungültiger Ordnerpfad, Sir."
 
         return True, ""
+
+    @staticmethod
+    def confirmation_description(tool_name: str, arguments: dict) -> str:
+        if tool_name == "system_action":
+            labels = {
+                "sleep": "Ruhezustand einleiten",
+                "shutdown": "Computer herunterfahren",
+                "restart": "Computer neu starten",
+                "logout": "Benutzer abmelden",
+            }
+            return labels.get(arguments.get("action"), "Systemaktion ausführen")
+        if tool_name == "clear_calendar":
+            return "alle Kalendereinträge löschen"
+        if tool_name == "delete_calendar_event":
+            return f"Kalendereintrag löschen: {arguments.get('text', '')}"
+        return tool_name

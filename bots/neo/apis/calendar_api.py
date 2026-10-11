@@ -33,9 +33,12 @@ def _load() -> dict:
     if not CALENDAR_FILE.exists():
         return {}
     try:
-        return json.loads(CALENDAR_FILE.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return {}
+        data = json.loads(CALENDAR_FILE.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Kalenderdatei ist ungültig: {e}") from e
+    if not isinstance(data, dict):
+        raise ValueError("Kalenderdatei muss ein JSON-Objekt enthalten.")
+    return data
 
 
 def _save(data: dict):
@@ -250,11 +253,16 @@ def delete_event(text: str) -> str:
                     return f"Gelöscht, Sir: {removed['title']} am {date}."
             return f"Sir, ich finde '{keyword}' am {date} nicht."
 
-        # Sonst: alle Termine des Tages löschen
-        count = len(events)
+        if len(events) > 1:
+            return (
+                f"Am {date} stehen mehrere Termine. Bitte nennen Sie den Titel, "
+                "damit nicht versehentlich alle gelöscht werden."
+            )
+
+        removed = events.pop()
         del data[date]
         _save(data)
-        return f"Alle {count} Termine am {date} gelöscht, Sir."
+        return f"Gelöscht, Sir: {removed['title']} am {date}."
 
     return "Sir, ich konnte kein Datum erkennen. Bitte sagen Sie z. B. 'lösche Termin am 16.10.'"
 

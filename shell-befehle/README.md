@@ -4,20 +4,6 @@
 
 A-Z Shell Toolbox is a Windows PowerShell profile extension with one-letter commands for common desktop, project, network, productivity, and game tasks. It is intended for personal use from an interactive PowerShell session.
 
-## Features
-
-- Show battery status, folder sizes, startup programs, and the current date.
-- Open a browser, calculator, Google Calendar, GitHub, or Office applications.
-- Navigate to the home directory or the `Desktop\Projekte` workspace.
-- Clean and inspect the Downloads folder.
-- Generate a password and copy it to the clipboard.
-- Calculate German grade points from a maximum and achieved score.
-- Show random or searched German Wikipedia articles.
-- Display weather forecasts through Open-Meteo.
-- Run a basic ping/download/upload speed test.
-- Search for Windows updates and display a console screensaver.
-- Convert text to Morse code, roll dice, flip a coin, and open a five-game menu.
-
 ## Command Overview
 
 | Command | Description |
