@@ -1,0 +1,19 @@
+{
+  "name": "spiele-cli",
+  "version": "1.0.0",
+  "description": "10 klassische Logik- und Strategiespiele für das Terminal",
+  "main": "bin/index.js",
+  "type": "module",
+  "bin": {
+    "spiele": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "node bin/index.js"
+  },
+  "keywords": ["cli", "games", "terminal", "tictactoe", "chess", "logic"],
+  "author": "Onur Kara",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@devhunt/cli-system",
+  "version": "1.0.0",
+  "description": "Install and launch the devHunt CLI collection",
+  "type": "module",
+  "bin": {
+    "cli-system": "./cli-system.mjs"
+  },
+  "scripts": {
+    "postinstall": "node ./cli-system.mjs install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "private": true
+}

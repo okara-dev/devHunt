@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 .venv/
 venv/
 env/
@@ -27,6 +28,7 @@ yarn-error.log*
 **/config.json
 **/ratings.json
 !**/config.example.json
+**/.daily-bot-state.json*
 
 # ---------- Runtime / DBs ----------
 *.log

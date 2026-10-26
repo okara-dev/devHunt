@@ -1,6 +1,0 @@
-onnxruntime-genai>=0.17.0
-rich>=13.0.0
-psutil>=5.9.0
-requests>=2.31.0
-pyautogui>=0.9.54
-huggingface_hub>=0.23.0
